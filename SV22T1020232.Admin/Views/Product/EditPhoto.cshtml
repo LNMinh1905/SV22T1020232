@@ -1,0 +1,65 @@
+﻿@model ProductPhoto
+@{
+    Layout = null;
+    var productId = Model.ProductID;
+}
+
+<div class="row justify-content-center">
+    <div class="col-12">
+        <div class="card card-info card-outline mt-4">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="bi bi-images me-2"></i>
+                    @(Model.PhotoID == 0 ? "Bổ sung ảnh" : "Cập nhật ảnh")
+                </h6>
+            </div>
+
+            <div class="card-body">
+                <form method="post" asp-action="SavePhoto">
+                    <input type="hidden" asp-for="PhotoID" />
+                    <input type="hidden" asp-for="ProductID" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Tên file ảnh</label>
+                        <input asp-for="Photo"
+                               class="form-control"
+                               placeholder="Nhập tên file ảnh (trong thư mục images/products)" />
+                        <span asp-validation-for="Photo" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Mô tả</label>
+                        <input asp-for="Description"
+                               class="form-control"
+                               placeholder="Mô tả ảnh" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Thứ tự hiển thị</label>
+                        <input asp-for="DisplayOrder"
+                               class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Hiển thị</label>
+                        <div class="form-check form-switch mt-1">
+                            <input class="form-check-input" asp-for="IsHidden" />
+                            <label class="form-check-label" asp-for="IsHidden">
+                                Ẩn ảnh
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i>
+                        Lưu
+                    </button>
+                    <a href="~/Product/Edit/@productId" class="btn btn-secondary ms-1">
+                        <i class="bi bi-arrow-left"></i>
+                        Quay lại
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

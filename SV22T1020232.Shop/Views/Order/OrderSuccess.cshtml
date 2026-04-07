@@ -1,0 +1,144 @@
+@model SV22T1020232.Models.Sales.OrderViewInfo
+@{
+    ViewData["Title"] = "Đặt Hàng Thành Công";
+}
+
+<style>
+    .success-card {
+        background: #fff;
+        border-radius: 24px;
+        border: none;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Hiệu ứng vòng tròn trang trí phía sau icon */
+    .success-icon-wrapper {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 2rem;
+    }
+
+        .success-icon-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            background: rgba(25, 135, 84, 0.1);
+            border-radius: 50%;
+            z-index: 0;
+            animation: pulse-success 2s infinite;
+        }
+
+    @@keyframes pulse-success {
+        0% {
+            transform: translate(-50%, -50%) scale(0.9);
+            opacity: 1;
+        }
+
+        100% {
+            transform: translate(-50%, -50%) scale(1.4);
+            opacity: 0;
+        }
+    }
+
+    .order-info-box {
+        background: #f8fafc;
+        border: 1px solid #f1f5f9;
+        border-radius: 16px;
+        padding: 1.5rem;
+    }
+
+    .btn-action {
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary-custom {
+        background: var(--primary);
+        color: white;
+        border: none;
+    }
+
+        .btn-primary-custom:hover {
+            background: #3d34bd;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+            color: white;
+        }
+
+    .btn-outline-custom {
+        background: transparent;
+        border: 1.5px solid #e2e8f0;
+        color: #64748b;
+    }
+
+        .btn-outline-custom:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #334155;
+        }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+        <div class="col-lg-6 col-md-9 text-center">
+            <div class="success-card p-4 p-md-5">
+                <div class="card-body">
+                    <div class="success-icon-wrapper">
+                        <i class="bi bi-check-circle-fill text-success position-relative" style="font-size: 5.5rem; z-index: 1;"></i>
+                    </div>
+
+                    <h2 class="fw-bold text-dark mb-2">Đặt hàng thành công!</h2>
+                    <p class="text-muted mb-4">
+                        Cảm ơn bạn đã tin tưởng mua sắm tại <span class="fw-bold text-primary">LNM Shop</span>.<br>
+                        Hệ thống đã nhận được đơn hàng của bạn.
+                    </p>
+
+                    <div class="order-info-box text-start mb-4 mx-auto" style="max-width: 450px;">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted small">Mã đơn hàng:</span>
+                            <span class="fw-bold text-dark">#@Model.OrderID</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted small">Người nhận:</span>
+                            <span class="text-dark fw-medium">@Model.CustomerName</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-muted small d-block">Địa chỉ giao hàng:</span>
+                            <span class="text-dark fw-medium small">@Model.DeliveryAddress, @Model.DeliveryProvince</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted small">Thời gian đặt:</span>
+                            <span class="text-dark small">@Model.OrderTime.ToString("dd/MM/yyyy HH:mm")</span>
+                        </div>
+                    </div>
+
+                    <p class="small text-muted mb-4">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Bạn có thể theo dõi trạng thái vận chuyển trong mục "Đơn mua".
+                    </p>
+
+                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                        <a asp-controller="Order" asp-action="MyOrders" class="btn btn-outline-custom btn-action">
+                            <i class="bi bi-box-seam me-2"></i>Quản lý đơn hàng
+                        </a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-primary-custom btn-action">
+                            Tiếp tục mua sắm <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 text-muted small">
+                Bạn cần hỗ trợ? <a href="#" class="text-decoration-none text-primary fw-medium">Liên hệ chúng tôi</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,103 @@
+@using SV22T1020232.Admin
+@using SV22T1020232.Admin.Models
+@using SV22T1020232.Models.Catalog
+@using SV22T1020232.Models.Common
+@using SV22T1020232.Models.DataDictionary
+@using SV22T1020232.Models.HR
+@using SV22T1020232.Models.Partner
+@using SV22T1020232.Models.Sales
+@using SV22T1020232.Models.Security
+@model PagedResult<Supplier>
+
+@{
+    Layout = null;
+}
+
+<div class="mb-2 text-muted">
+    Danh sách này có <strong>@Model.RowCount</strong> nhà cung cấp
+</div>
+
+<div class="card">
+    <div class="card-body p-1">
+        <table class="table table-bordered table-hover mb-0">
+            <thead class="table-secondary">
+                <tr>
+                    <th>Tên nhà cung cấp</th>
+                    <th>Tên giao dịch</th>
+                    <th>Điện thoại</th>
+                    <th>Email</th>
+                    <th>Địa chỉ</th>
+                    <th>Tỉnh / Thành</th>
+                    <th class="text-center" style="width:120px;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.DataItems != null && Model.DataItems.Any())
+                {
+                    foreach (var s in Model.DataItems)
+                    {
+                        <tr>
+                            <td>@s.SupplierName</td>
+                            <td>@s.ContactName</td>
+                            <td>@s.Phone</td>
+                            <td>@s.Email</td>
+                            <td>@s.Address</td>
+                            <td>@s.Province</td>
+                            <td class="text-center">
+                                <a asp-controller="Supplier"
+                                   asp-action="Edit"
+                                   asp-route-id="@s.SupplierID"
+                                   class="btn btn-sm btn-primary me-1">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a asp-controller="Supplier"
+                                   asp-action="Delete"
+                                   asp-route-id="@s.SupplierID"
+                                   class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">
+                            Không có nhà cung cấp nào.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card-footer">
+        <ul class="pagination justify-content-center mb-0">
+            @foreach (var p in Model.GetDisplayPages())
+            {
+                if (p.IsCurrent)
+                {
+                    <li class="page-item active">
+                        <a class="page-link">@p.Page</a>
+                    </li>
+                }
+                else if (p.IsEllipsis)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="#">...</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:;"
+                           onclick="paginationSearch(event, document.getElementById('formSearch'), @p.Page)">
+                            @p.Page
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+</div>

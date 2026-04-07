@@ -1,0 +1,55 @@
+﻿@model ProductAttribute
+@{
+    Layout = null;
+    var productId = Model.ProductID;
+}
+
+<div class="row justify-content-center">
+    <div class="col-12">
+        <div class="card card-success card-outline mt-4">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="bi bi-list-check me-2"></i>
+                    @(Model.AttributeID == 0 ? "Bổ sung thuộc tính" : "Cập nhật thuộc tính")
+                </h6>
+            </div>
+
+            <div class="card-body">
+                <form method="post" asp-action="SaveAttribute">
+                    <input type="hidden" asp-for="AttributeID" />
+                    <input type="hidden" asp-for="ProductID" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Tên thuộc tính</label>
+                        <input asp-for="AttributeName"
+                               class="form-control"
+                               placeholder="Tên thuộc tính" />
+                        <span asp-validation-for="AttributeName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Giá trị</label>
+                        <input asp-for="AttributeValue"
+                               class="form-control"
+                               placeholder="Giá trị" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Thứ tự hiển thị</label>
+                        <input asp-for="DisplayOrder"
+                               class="form-control" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i>
+                        Lưu
+                    </button>
+                    <a href="~/Product/Edit/@productId" class="btn btn-secondary ms-1">
+                        <i class="bi bi-arrow-left"></i>
+                        Quay lại
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

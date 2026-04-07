@@ -1,0 +1,539 @@
+/* ============================================================
+   SV22T1020071.Shop — Apple/Indigo Design System
+   Color: Black #0a0a0a | White #F9F9FB | Indigo #4F46E5
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ---- Design Tokens ---- */
+:root {
+    /* Tông màu Tím Trendy mới */
+    --primary: #8b5cf6;
+    --primary-hover: #7c3aed;
+    --primary-light: rgba(139, 92, 246, 0.1); /* Dựa trên mã #8b5cf6 */
+    /* Nền và text */
+    --bg-page: #f8fafc; /* Nền xám xanh cực nhạt */
+    --bg-white: #ffffff;
+    --card-bg: #ffffff;
+    --header-bg: #0a0a0a;
+    --footer-bg: #1d1d1f;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-light: #f5f5f7;
+    /* Bóng đổ & Viền */
+    --border-color: rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    /* Bo góc hiện đại */
+    --radius-card: 16px;
+    --radius-btn: 12px;
+    --radius-pill: 50px;
+    --radius-input: 12px;
+    --transition: all 0.3s ease;
+}
+
+/* ---- Base ---- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { font-size: 15px; scroll-behavior: smooth; }
+@media (min-width: 768px) { html { font-size: 16px; } }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   HEADER — Apple Dark Nav
+   ============================================================ */
+.app-header {
+  background: var(--header-bg);
+  color: var(--text-light);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+
+/* Top utility bar */
+.app-topbar {
+  font-size: 0.78rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 6px 0;
+}
+.app-topbar a {
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.app-topbar a:hover { color: #fff; }
+
+/* Main nav row */
+.app-nav {
+  padding: 12px 0;
+}
+
+/* Logo */
+.app-logo {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.app-logo:hover { color: #e0e0ff; }
+.app-logo i { color: var(--primary); font-size: 1.4rem; }
+
+/* Search bar — frosted glass feel */
+.app-search-form {
+  display: flex;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: var(--transition);
+}
+.app-search-form:focus-within {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.3);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+}
+.app-search-form input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  padding: 8px 16px;
+  flex: 1;
+  font-size: 0.9rem;
+  outline: none;
+}
+.app-search-form input::placeholder { color: rgba(255,255,255,0.45); }
+.app-search-form button {
+  background: var(--primary);
+  border: none;
+  color: #fff;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 0.9rem;
+}
+.app-search-form button:hover { background: var(--primary-hover); }
+
+/* Cart icon */
+.cart-icon-wrapper {
+  position: relative;
+  font-size: 1.5rem;
+  color: rgba(255,255,255,0.85);
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.cart-icon-wrapper:hover { color: #fff; }
+.cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  border-radius: 20px;
+  padding: 1px 6px;
+  min-width: 18px;
+  text-align: center;
+  line-height: 16px;
+}
+
+/* User dropdown */
+.app-user-btn {
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+.app-user-btn:hover { color: #fff; }
+
+/* Fix dropdown menu — các icon phải hiển thị rõ trên nền trắng */
+.dropdown-menu .dropdown-item {
+  color: var(--text-primary) !important;
+}
+.dropdown-menu .dropdown-item i {
+  color: var(--text-secondary) !important;
+}
+.dropdown-menu .dropdown-item:hover {
+  background: var(--primary-light) !important;
+  color: var(--primary) !important;
+}
+.dropdown-menu .dropdown-item:hover i {
+  color: var(--primary) !important;
+}
+/* Email text màu đậm hơn để đọc được */
+.dropdown-menu li.text-muted,
+.dropdown-menu li.px-3.text-muted {
+  color: var(--text-secondary) !important;
+  font-size: 0.8rem;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn-primary-indigo {
+  background-color: var(--primary) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: var(--radius-btn) !important;
+  font-weight: 500;
+  padding: 10px 22px;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  letter-spacing: -0.1px;
+}
+.btn-primary-indigo:hover {
+  background-color: var(--primary-hover) !important;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35) !important;
+  transform: translateY(-1px);
+}
+.btn-primary-indigo:active { transform: translateY(0); }
+
+.btn-outline-indigo {
+  color: var(--primary) !important;
+  border: 1.5px solid var(--primary) !important;
+  background: transparent !important;
+  border-radius: var(--radius-btn) !important;
+  font-weight: 500;
+  padding: 9px 20px;
+  transition: var(--transition);
+}
+.btn-outline-indigo:hover {
+  background: var(--primary-light) !important;
+  box-shadow: 0 2px 10px rgba(79, 70, 229, 0.15) !important;
+}
+
+/* Legacy aliases (backward compat) */
+.btn-primary-shopee { 
+  background-color: var(--primary) !important; 
+  color: #fff !important; 
+  border: none !important; 
+  border-radius: var(--radius-btn) !important;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+.btn-primary-shopee:hover { background-color: var(--primary-hover) !important; }
+.btn-outline-shopee {
+  color: var(--primary) !important;
+  border: 1.5px solid var(--primary) !important;
+  background: transparent !important;
+  border-radius: var(--radius-btn) !important;
+}
+.btn-outline-shopee:hover { background: var(--primary-light) !important; }
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.app-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.25s, transform 0.25s;
+}
+.app-card:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+/* Legacy alias */
+.shopee-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-card) !important;
+  box-shadow: var(--shadow-card);
+}
+
+/* Product card hover lift */
+.product-card-hover {
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  cursor: pointer;
+}
+.product-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover) !important;
+}
+.product-card-hover:hover .add-to-cart-overlay {
+  opacity: 1 !important;
+}
+.add-to-cart-overlay {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+.form-control, .form-select {
+  border-radius: var(--radius-input) !important;
+  border-color: var(--border-color) !important;
+  font-size: 0.95rem;
+  transition: var(--transition);
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15) !important;
+}
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+.text-primary-shopee, .text-primary-indigo { color: var(--primary) !important; }
+.bg-primary-shopee, .bg-primary-indigo { background-color: var(--primary) !important; }
+.border-primary-shopee, .border-primary-indigo { border-color: var(--primary) !important; }
+
+/* Pagination */
+.page-link { 
+  border-radius: 6px !important; 
+  color: var(--primary);
+  margin: 0 2px;
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+.page-item.active .page-link {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: #fff;
+}
+.page-link:hover { 
+  background: var(--primary-light); 
+  color: var(--primary); 
+  border-color: var(--primary);
+}
+
+/* Breadcrumb */
+.breadcrumb-item a { color: var(--primary); text-decoration: none; }
+.breadcrumb-item a:hover { color: var(--primary-hover); }
+
+/* Badge */
+.badge-indigo {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+/* Nav tabs Indigo */
+.nav-tabs .nav-link.active {
+  color: var(--primary) !important;
+  border-bottom: 2px solid var(--primary) !important;
+  font-weight: 600;
+}
+.nav-tabs .nav-link:hover { color: var(--primary); }
+
+/* ============================================================
+   TRUST FEATURES STRIP
+   ============================================================ */
+.trust-strip {
+  background: var(--bg-white);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: 36px 0;
+}
+.trust-strip i { color: var(--primary); }
+.trust-strip h6 { font-weight: 600; color: var(--text-primary); font-size: 0.85rem; }
+.trust-strip p { color: var(--text-secondary); font-size: 0.8rem; margin: 0; }
+
+/* ============================================================
+   FOOTER — Apple Dark
+   ============================================================ */
+.app-footer {
+  background: var(--footer-bg);
+  color: rgba(255,255,255,0.55);
+  padding: 48px 0 24px;
+  font-size: 0.85rem;
+}
+.app-footer h6 {
+  color: rgba(255,255,255,0.9);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+}
+.app-footer a {
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  transition: color 0.2s;
+  display: block;
+  margin-bottom: 8px;
+}
+.app-footer a:hover { color: rgba(255,255,255,0.9); }
+.app-footer .footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+  color: rgba(255,255,255,0.7);
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+.app-footer .footer-social a:hover {
+  background: var(--primary);
+  color: #fff;
+}
+.app-footer hr { border-color: rgba(255,255,255,0.08); }
+.app-footer .footer-bottom { color: rgba(255,255,255,0.3); font-size: 0.78rem; }
+
+/* ============================================================
+   ALERTS & TOASTS
+   ============================================================ */
+.alert { border-radius: var(--radius-card); border: none; }
+.alert-success { background: #e8f5e9; color: #1b5e20; }
+.alert-danger  { background: #fce4ec; color: #880e4f; }
+
+/* ============================================================
+   ACCOUNT SIDEBAR
+   ============================================================ */
+.account-sidebar {
+  background: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+}
+.account-sidebar .nav-link {
+  color: var(--text-secondary);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+.account-sidebar .nav-link:hover { background: var(--primary-light); color: var(--primary); }
+.account-sidebar .nav-link.active { background: var(--primary-light); color: var(--primary); font-weight: 600; }
+
+/* ============================================================
+   CHECKOUT & ORDER
+   ============================================================ */
+.order-progress .step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid var(--border-color);
+  background: var(--bg-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: var(--transition);
+}
+.order-progress .step-circle.done {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.order-progress .step-line {
+  height: 3px;
+  background: var(--border-color);
+  flex: 1;
+}
+.order-progress .step-line.done { background: var(--primary); }
+
+/* ============================================================
+   MICRO-ANIMATIONS
+   ============================================================ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in-up { animation: fadeInUp 0.35s ease both; }
+
+/* ============================================================
+   SCROLLBAR (optional minimalist)
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 10px; }
+
+/* Footer email input placeholder */
+.footer-email-input::placeholder { color: rgba(255,255,255,0.55) !important; }
+
+/* 1. ĐỊNH NGHĨA BẢNG MÀU HIỆN ĐẠI (Tím Trendy & Nền sáng) */
+:root {
+    --primary-color: #8b5cf6; /* Tím sáng hiện đại */
+    --primary-hover: #7c3aed; /* Tím đậm hơn khi hover */
+    --bg-main: #f8fafc; /* Nền trang hơi xám xanh cực nhạt, không dùng trắng tinh */
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --radius-md: 16px; /* Bo góc chuẩn app mobile hiện nay */
+    --radius-pill: 50px; /* Bo góc tròn cho nút bấm */
+}
+
+/* 2. LÀM ĐẸP THẺ SẢN PHẨM (Card) */
+.product-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid #f1f5f9; /* Viền cực mờ */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); /* Bóng đổ siêu nhẹ */
+    transition: all 0.3s ease;
+    overflow: hidden; /* Giữ ảnh bo góc theo card */
+}
+
+    .product-card:hover {
+        transform: translateY(-5px); /* Hiệu ứng bay nhẹ lên khi chuột vào */
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-card img {
+        transition: transform 0.5s ease;
+    }
+
+    .product-card:hover img {
+        transform: scale(1.05); /* Ảnh zoom nhẹ bên trong card */
+    }
+
+/* 3. ĐỊNH DẠNG TÊN SẢN PHẨM & GIÁ TIỀN */
+.product-title {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.product-price {
+    font-weight: 800; /* In đậm giá tiền */
+    color: var(--primary-color);
+    font-size: 1.25rem;
+}
+
+/* 4. NÚT BẤM "MUA NGAY" / "THÊM VÀO GIỎ" HIỆN ĐẠI */
+.btn-modern {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: var(--radius-pill);
+    padding: 10px 24px;
+    font-weight: 600;
+    border: none;
+    transition: all 0.3s ease;
+    /* Bóng đổ tiệp với màu của nút (màu tím) chứ không phải bóng đen */
+    box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.39);
+}
+
+    .btn-modern:hover {
+        background-color: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+        color: white;
+    }

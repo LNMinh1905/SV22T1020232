@@ -1,0 +1,58 @@
+@using SV22T1020232.Admin
+@using SV22T1020232.Admin.Models
+@using SV22T1020232.Models.Catalog
+@using SV22T1020232.Models.Common
+@using SV22T1020232.Models.DataDictionary
+@using SV22T1020232.Models.HR
+@using SV22T1020232.Models.Partner
+@using SV22T1020232.Models.Sales
+@using SV22T1020232.Models.Security
+@model Shipper
+
+@section PageToolBar {
+    <button type="submit" form="formEdit" class="btn btn-primary">
+        <i class="bi bi-save"></i>
+        Lưu dữ SV22T1020071
+    </button>
+
+    <a asp-controller="Shipper"
+       asp-action="Index"
+       class="btn btn-secondary ms-1">
+        <i class="bi bi-arrow-left"></i>
+        Quay lại
+    </a>
+}
+
+<div class="row justify-content-center">
+    <div class="col-12">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-bicycle me-2"></i>
+                    Thông tin người giao hàng
+                </h5>
+            </div>
+
+            <div class="card-body">
+                <form id="formEdit" method="post" asp-action="Save">
+                    <input type="hidden" asp-for="ShipperID" />
+
+                    <div class="mb-3">
+                        <label asp-for="ShipperName" class="form-label"></label>
+                        <input asp-for="ShipperName" class="form-control" autofocus />
+                        <span asp-validation-for="ShipperName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Phone" class="form-label"></label>
+                        <input asp-for="Phone" class="form-control" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

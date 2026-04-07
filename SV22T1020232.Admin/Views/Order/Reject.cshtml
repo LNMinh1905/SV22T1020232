@@ -1,0 +1,67 @@
+@model OrderViewInfo
+@{
+    Layout = null;
+}
+<div class="modal-header text-bg-warning">
+    <strong class="modal-title">
+        Từ chối đơn hàng #@Model.OrderID
+    </strong>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<form id="formOrderReject" method="post" action="@Url.Action("Reject", "Order", new { id = Model.OrderID })" onsubmit="return handleOrderReject(event, this);">
+    <div class="modal-body">
+        <div class="alert alert-warning d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Bạn có chắc chắn muốn từ chối đơn hàng này?
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-warning">
+            <i class="bi bi-x"></i> Từ chối
+        </button>
+        <button type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal">
+            Đóng
+        </button>
+    </div>
+</form>
+<script>
+    function handleOrderReject(event, form) {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Lỗi khi gọi API');
+            }
+            return response.json();
+        })
+        .then(result => {
+            if (result.Code === 0) {
+                alert(result.Message);
+            } else {
+                const modalElement = document.getElementById('dialogModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+                alert(result.Message || 'Từ chối đơn hàng thành công!');
+                window.location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Không gửi được yêu cầu');
+        });
+
+        return false;
+    }
+</script>

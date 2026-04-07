@@ -1,0 +1,38 @@
+## --- Visual Studio ---
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.userosscache
+*.sln.docstates
+.vsconfig
+
+## --- .NET Core ---
+project.lock.json
+project.fragment.lock.json
+artifacts/
+publish/
+*.showcase
+
+## --- ASP.NET Core ---
+appsettings.Development.json
+appsettings.Personal.json
+
+## --- Node / Front-end (Nếu bạn có dùng npm) ---
+node_modules/
+npm-debug.log
+/wwwroot/lib/
+
+## --- OS files ---
+.DS_Store
+Thumbs.db
+
+## --- User specific files ---
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## --- Rider / JetBrains ---
+.idea/
+*.sln.iml

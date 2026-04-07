@@ -1,0 +1,67 @@
+@model OrderViewInfo
+@{
+    Layout = null;
+}
+<div class="modal-header text-bg-info">
+    <strong class="modal-title">
+        Duyệt chấp nhận đơn hàng #@Model.OrderID
+    </strong>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<form id="formOrderAccept" method="post" action="@Url.Action("Accept", "Order", new { id = Model.OrderID })" onsubmit="return handleOrderAccept(event, this);">
+    <div class="modal-body">
+        <div class="alert alert-info d-flex align-items-center">
+            <i class="bi bi-info-circle me-2"></i>
+            Bạn có chắc chắn muốn duyệt và chấp nhận đơn hàng này không?
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check"></i> Chấp nhận
+        </button>
+        <button type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal">
+            Đóng
+        </button>
+    </div>
+</form>
+<script>
+    function handleOrderAccept(event, form) {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Lỗi khi gọi API');
+            }
+            return response.json();
+        })
+        .then(result => {
+            if (result.Code === 0) {
+                alert(result.Message);
+            } else {
+                const modalElement = document.getElementById('dialogModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+                alert(result.Message || 'Duyệt đơn hàng thành công!');
+                window.location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Không gửi được yêu cầu');
+        });
+
+        return false;
+    }
+</script>

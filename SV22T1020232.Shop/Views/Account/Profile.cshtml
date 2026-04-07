@@ -1,0 +1,283 @@
+@model SV22T1020232.Shop.Models.ProfileViewModel
+@using SV22T1020232.Models.DataDictionary
+@{
+    ViewData["Title"] = "Hồ Sơ Cá Nhân";
+    var userData = SV22T1020232.Shop.WebUserExtensions.GetUserData(User);
+    var photoSrc = string.IsNullOrEmpty(Model.Photo) ? "/images/customers/nophoto.png" : $"/images/customers/{Model.Photo}";
+    var provinces = ViewBag.Provinces as List<Province> ?? new List<Province>();
+}
+
+<style>
+    /* CSS cho Dashboard cá nhân */
+    .profile-wrapper {
+        padding-top: 2rem;
+    }
+
+    .account-sidebar {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        position: sticky;
+        top: 100px;
+    }
+
+    .nav-account .nav-link {
+        color: #64748b;
+        font-weight: 500;
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 4px;
+    }
+
+        .nav-account .nav-link:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .nav-account .nav-link.active {
+            background: rgba(99, 102, 241, 0.08);
+            color: var(--primary);
+        }
+
+    .profile-card {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .form-label-custom {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control-modern {
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 10px 14px;
+        transition: all 0.2s;
+        background-color: #f8fafc;
+    }
+
+        .form-control-modern:focus {
+            background-color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            outline: none;
+        }
+
+    .avatar-upload-box {
+        position: relative;
+        width: 100px;
+        height: 100px;
+    }
+
+    .avatar-edit-btn {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid #fff;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+        .avatar-edit-btn:hover {
+            transform: scale(1.1);
+        }
+
+    /* Đè style cho Choices.js để đồng bộ */
+    .choices__inner {
+        background-color: #f8fafc !important;
+        border-radius: 10px !important;
+        border: 1px solid var(--border-color) !important;
+        min-height: 45px !important;
+    }
+</style>
+
+<div class="profile-wrapper mb-5">
+    <div class="row g-4">
+        <div class="col-lg-3">
+            <div class="account-sidebar shadow-sm">
+                <div class="text-center mb-4">
+                    <div class="position-relative d-inline-block mb-3">
+                        <img id="avatarPreviewSidebar" src="@photoSrc" alt="Avatar"
+                             class="rounded-circle border p-1"
+                             style="width:85px;height:85px;object-fit:cover;">
+                    </div>
+                    <h6 class="fw-bold mb-0 text-dark">@Model.CustomerName</h6>
+                    <p class="text-muted small mb-0">@Model.Email</p>
+                </div>
+
+                <hr class="opacity-10 my-4">
+
+                <nav class="nav flex-column nav-account">
+                    <a class="nav-link active" asp-action="Profile">
+                        <i class="bi bi-person-circle fs-5"></i> Tài khoản của tôi
+                    </a>
+                    <a class="nav-link" asp-controller="Order" asp-action="MyOrders">
+                        <i class="bi bi-receipt fs-5"></i> Đơn hàng đã mua
+                    </a>
+                    <a class="nav-link" asp-action="ChangePassword">
+                        <i class="bi bi-shield-lock fs-5"></i> Bảo mật & Mật khẩu
+                    </a>
+                    <a class="nav-link text-danger mt-3" href="/Account/Logout">
+                        <i class="bi bi-box-arrow-right fs-5"></i> Đăng xuất
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="profile-card p-4 p-md-5">
+                <div class="d-flex align-items-center gap-3 mb-1">
+                    <h4 class="fw-bold text-dark mb-0" style="letter-spacing: -0.5px;">Thiết lập hồ sơ</h4>
+                    <span class="badge bg-soft-primary text-primary border border-primary border-opacity-10 rounded-pill px-3 py-2"
+                          style="background: rgba(99, 102, 241, 0.1); font-size: 0.7rem;">Khách hàng thân thiết</span>
+                </div>
+                <p class="text-muted small mb-5">Thay đổi thông tin cá nhân và ảnh đại diện để mọi người dễ nhận diện bạn.</p>
+
+                <form asp-action="Profile" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 small rounded-3 mb-4"></div>
+                    <input asp-for="CustomerId" type="hidden" />
+                    <input asp-for="Email" type="hidden" />
+                    <input asp-for="Photo" type="hidden" />
+
+                    <div class="row g-4">
+                        <div class="col-12 mb-2">
+                            <div class="d-flex align-items-center gap-4">
+                                <div class="avatar-upload-box">
+                                    <img id="avatarPreviewMain" src="@photoSrc" class="rounded-circle border"
+                                         style="width:100px;height:100px;object-fit:cover;" alt="Avatar">
+                                    <label for="avatarInput" class="avatar-edit-btn">
+                                        <i class="bi bi-camera-fill"></i>
+                                    </label>
+                                    <input type="file" id="avatarInput" asp-for="AvatarFile" accept=".jpg,.jpeg,.png" class="d-none">
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Ảnh đại diện</h6>
+                                    <p class="text-muted small mb-0">Hỗ trợ JPG, PNG. Tối đa 2MB.</p>
+                                    <span asp-validation-for="AvatarFile" class="text-danger small d-block"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="CustomerName" class="form-label-custom">Họ và tên của bạn</label>
+                            <input asp-for="CustomerName" class="form-control-modern w-100" placeholder="Nguyễn Văn A" />
+                            <span asp-validation-for="CustomerName" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ContactName" class="form-label-custom">Tên giao dịch (Nick name)</label>
+                            <input asp-for="ContactName" class="form-control-modern w-100" placeholder="Tên hiển thị khi đánh giá" />
+                            <span asp-validation-for="ContactName" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Địa chỉ Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text border-0 bg-light rounded-start-3"><i class="bi bi-envelope text-muted"></i></span>
+                                <input value="@Model.Email" class="form-control-modern flex-grow-1 rounded-start-0" readonly disabled
+                                       style="background: #f1f5f9; cursor: not-allowed; opacity: 0.8;">
+                            </div>
+                            <div class="text-muted" style="font-size: 0.7rem; margin-top: 5px;"><i class="bi bi-info-circle me-1"></i>Email đăng ký không thể thay đổi</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label-custom">Số điện thoại liên lạc</label>
+                            <input asp-for="Phone" class="form-control-modern w-100" placeholder="090 123 4567" type="tel" />
+                            <span asp-validation-for="Phone" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="col-md-8">
+                            <label asp-for="Address" class="form-label-custom">Địa chỉ nhận hàng</label>
+                            <input asp-for="Address" class="form-control-modern w-100" placeholder="Số nhà, đường, phường/xã..." />
+                            <span asp-validation-for="Address" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="Province" class="form-label-custom">Tỉnh / Thành phố</label>
+                            <select asp-for="Province" class="form-select" id="provinceDropdown">
+                                <option value="">-- Chọn tỉnh/thành --</option>
+                                @foreach (var prov in provinces)
+                                {
+                                    if (Model.Province == prov.ProvinceName)
+                                    {
+                                        <option value="@prov.ProvinceName" selected>@prov.ProvinceName</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@prov.ProvinceName">@prov.ProvinceName</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="Province" class="text-danger small mt-1 d-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 pt-3 border-top">
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn btn-dark rounded-pill px-5 py-2 fw-bold">
+                                Lưu thay đổi
+                            </button>
+                            <a asp-action="Profile" class="btn btn-outline-secondary rounded-pill px-4">Làm mới</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Init Choices.js
+        const element = document.querySelector('#provinceDropdown');
+        const choices = new Choices(element, {
+            searchEnabled: true,
+            itemSelectText: '',
+            noResultsText: 'Không tìm thấy kết quả',
+            shouldSort: false,
+            classNames: {
+                containerInner: 'choices__inner',
+            }
+        });
+
+        // Image Preview Logic
+        document.getElementById('avatarInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Dung lượng ảnh không được vượt quá 2MB!');
+                this.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (ev) {
+                document.getElementById('avatarPreviewSidebar').src = ev.target.result;
+                document.getElementById('avatarPreviewMain').src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    </script>
+}

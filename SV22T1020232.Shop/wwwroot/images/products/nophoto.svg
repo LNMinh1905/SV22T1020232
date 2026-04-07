@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300" role="img" aria-label="Không có £nh">
+  <rect width="400" height="300" fill="#e9ecef"/>
+  <path fill="#ced4da" d="M160 115h80v70h-80z"/>
+  <circle fill="#adb5bd" cx="200" cy="135" r="18"/>
+  <text x="200" y="220" text-anchor="middle" fill="#868e96" font-family="system-ui,sans-serif" font-size="14">Ch°a có £nh</text>
+</svg>

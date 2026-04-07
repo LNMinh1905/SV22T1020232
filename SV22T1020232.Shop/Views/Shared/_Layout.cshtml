@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="LNM Shop - Modern E-commerce Experience" />
+    <title>@ViewData["Title"] - LNM</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SV22T1020232.Shop.styles.css" asp-append-version="true" />
+
+    <style>
+        :root {
+            --primary: #a78bfa; /* Tím nhạt chủ đạo */
+            --primary-hover: #8b5cf6;
+            --primary-dark: #7c3aed;
+            --bg-body: #f3e8ff; /* Nền tím nhạt */
+            --bg-gradient: linear-gradient(135deg, #fae8ff 0%, #e9d5ff 50%, #ddd6fe 100%);
+            --surface: #ffffff;
+            --surface-purple: #faf5ff;
+            --text-dark: #581c87;
+            --text-muted: #7c3aed;
+            --border-color: #e9d5ff;
+            --accent: #ec4899; /* Màu hồng nhấn */
+            --radius-md: 20px;
+            --radius-lg: 30px;
+            --radius-pill: 9999px;
+            --shadow-sm: 0 2px 8px rgba(167, 139, 250, 0.15);
+            --shadow-md: 0 8px 20px rgba(167, 139, 250, 0.25);
+            --shadow-lg: 0 15px 35px rgba(167, 139, 250, 0.35);
+            --shadow-glow: 0 0 30px rgba(167, 139, 250, 0.4);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(236, 72, 153, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(167, 139, 250, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.06) 0%, transparent 50%);
+            animation: floatBg 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @@keyframes floatBg {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.05); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        /* ----- MODERN FLOATING HEADER ----- */
+        .app-header {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: none;
+            box-shadow: 0 4px 24px rgba(167, 139, 250, 0.15);
+            transition: all 0.3s ease;
+            border-radius: 0 0 25px 25px;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+
+        .brand-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .brand-logo i {
+                background: linear-gradient(135deg, var(--primary), #a855f7);
+               
+                -webkit-text-fill-color: transparent;
+            }
+
+        /* ----- MODERN SEARCH BAR ----- */
+        .search-wrapper {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-pill);
+            display: flex;
+            align-items: center;
+            padding: 4px 6px 4px 20px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+            .search-wrapper:focus-within {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+            }
+
+            .search-wrapper input {
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                outline: none;
+                width: 100%;
+                font-size: 0.95rem;
+                color: var(--text-dark);
+            }
+
+                .search-wrapper input::placeholder {
+                    color: #94a3b8;
+                }
+
+            .search-wrapper button {
+                background: var(--text-dark);
+                color: white;
+                border: none;
+                border-radius: var(--radius-pill);
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: 0.2s;
+            }
+
+                .search-wrapper button:hover {
+                    background: var(--primary);
+                }
+
+        /* ----- ICONS & BUTTONS ----- */
+        .nav-icon-btn {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--text-dark);
+            background: transparent;
+            text-decoration: none;
+            transition: 0.2s;
+            font-size: 1.25rem;
+        }
+
+            .nav-icon-btn:hover {
+                background: #f1f5f9;
+                color: var(--primary);
+            }
+
+        .cart-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: var(--primary);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 600;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        /* User Dropdown Profile */
+        .user-profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 6px 16px 6px 6px;
+            border-radius: var(--radius-pill);
+            border: 1px solid var(--border-color);
+            background: var(--surface);
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+            .user-profile-btn:hover {
+                border-color: #cbd5e1;
+                background: #f8fafc;
+            }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .dropdown-menu.modern-dropdown {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            padding: 0.5rem;
+            margin-top: 10px;
+        }
+
+        .modern-dropdown .dropdown-item {
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-weight: 500;
+            color: var(--text-dark);
+            transition: 0.2s;
+        }
+
+            .modern-dropdown .dropdown-item:hover {
+                background-color: #f1f5f9;
+                color: var(--primary);
+            }
+
+        /* ----- FOOTER MINIMAL ----- */
+        .app-footer {
+            background-color: var(--surface);
+            border-top: 1px solid var(--border-color);
+            padding: 4rem 0 2rem 0;
+            margin-top: auto; /* Đẩy footer xuống dưới cùng */
+        }
+
+        .footer-heading {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+        }
+
+        .footer-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+
+            .footer-link:hover {
+                color: var(--primary);
+                transform: translateX(4px);
+            }
+
+        .social-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+            .social-circle:hover {
+                background: var(--text-dark);
+                color: white;
+            }
+
+        /* Sửa layout main để footer luôn ở đáy */
+        html, body {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            flex: 1 0 auto;
+        }
+    </style>
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+    <header class="app-header sticky-top py-3">
+        <div class="container">
+            <div class="row align-items-center g-3">
+
+                <div class="col-auto col-lg-2">
+                    <a asp-controller="Home" asp-action="Index" class="brand-logo">
+                        <i class="bi bi-hexagon-fill"></i>
+                        <span>LNM.</span>
+                    </a>
+                </div>
+
+                <div class="col-12 col-lg-7 order-3 order-lg-2">
+                    <form asp-controller="Product" asp-action="Index" method="get">
+                        <div class="search-wrapper" style="max-width: 100%;">
+                            <input type="text" name="SearchValue" placeholder="Tìm kiếm sản phẩm, danh mục..." value="@Context.Request.Query["SearchValue"]" autocomplete="off">
+                            <button type="submit" title="Tìm kiếm"><i class="bi bi-search"></i></button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-auto col-lg-3 order-2 order-lg-3 d-flex justify-content-end align-items-center gap-3">
+
+                    <a asp-controller="Cart" asp-action="Index" class="nav-icon-btn px-2 w-auto" style="border-radius: 12px;" title="Giỏ hàng">
+                        <div class="position-relative">
+                            <i class="bi bi-bag-heart fs-4"></i>
+                            <span class="cart-badge" style="top: -5px; right: -8px;">0</span>
+                        </div>
+                        <span class="d-none d-xl-inline ms-2 fw-medium" style="font-size: 0.9rem;">Giỏ hàng</span>
+                    </a>
+
+                    <div class="vr mx-1 text-muted d-none d-sm-block" style="height: 25px;"></div>
+
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        var userData = SV22T1020232.Shop.WebUserExtensions.GetUserData(User);
+                        <div class="dropdown">
+                            <a href="#" class="user-profile-btn" data-bs-toggle="dropdown">
+                                <div class="user-avatar">
+                                    <i class="bi bi-person"></i>
+                                </div>
+                                <span class="d-none d-sm-inline">@userData?.CustomerName</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end modern-dropdown">
+                                <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile">Tài khoản</a></li>
+                                <li><a class="dropdown-item" asp-controller="Order" asp-action="MyOrders">Đơn hàng</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form asp-controller="Account" asp-action="Logout" method="post">
+                                        <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-dark rounded-pill px-4 fw-medium" style="font-size: 0.85rem;">
+                            Đăng nhập
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="container mt-4 mb-5">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 d-flex align-items-center gap-2" role="alert" style="border-radius: var(--radius-md); background-color: #ecfdf5; color: #065f46;">
+                    <i class="bi bi-check-circle-fill fs-5"></i>
+                    <div>@TempData["SuccessMessage"]</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <div class="container">
+            <div class="row g-5 mb-5">
+                <div class="col-lg-4 pe-lg-5">
+                    <a asp-controller="Home" asp-action="Index" class="brand-logo mb-3 d-inline-flex">
+                        <i class="bi bi-hexagon-fill"></i>
+                        <span>LNM.</span>
+                    </a>
+                    <p class="text-muted" style="line-height: 1.7;">
+                        Chúng tôi định hình lại trải nghiệm mua sắm trực tuyến. Cung cấp các sản phẩm chất lượng cao với thiết kế tối giản và giao hàng thần tốc.
+                    </p>
+                    <div class="d-flex gap-3 mt-4">
+                        <a href="#" class="social-circle"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="social-circle"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-circle"><i class="bi bi-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-4 col-6">
+                    <h6 class="footer-heading">Cửa hàng</h6>
+                    <a href="#" class="footer-link">Sản phẩm mới</a>
+                    <a href="#" class="footer-link">Bộ sưu tập</a>
+                    <a href="#" class="footer-link">Khuyến mãi</a>
+                </div>
+
+                <div class="col-lg-2 col-md-4 col-6">
+                    <h6 class="footer-heading">Hỗ trợ</h6>
+                    <a href="#" class="footer-link">FAQs</a>
+                    <a href="#" class="footer-link">Chính sách vận chuyển</a>
+                    <a href="#" class="footer-link">Đổi trả & Hoàn tiền</a>
+                </div>
+
+                <div class="col-lg-4 col-md-4">
+                    <h6 class="footer-heading">Đăng ký nhận tin</h6>
+                    <p class="text-muted mb-3" style="font-size: 0.95rem;">Nhận email cập nhật về bộ sưu tập mới và ưu đãi đặc biệt.</p>
+                    <div class="search-wrapper p-1" style="max-width: 100%;">
+                        <input type="email" class="ms-3" placeholder="Địa chỉ email...">
+                        <button class="rounded-pill px-4" style="width: auto;">Đăng ký</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-4 border-top" style="border-color: var(--border-color)!important;">
+                <p class="text-muted mb-0 small">© 2026 LNM Shop. All rights reserved.</p>
+                <div class="d-flex gap-3 mt-3 mt-md-0 small">
+                    <a href="#" class="text-muted text-decoration-none">Chính sách bảo mật</a>
+                    <a href="#" class="text-muted text-decoration-none">Điều khoản dịch vụ</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

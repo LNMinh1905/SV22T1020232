@@ -1,0 +1,305 @@
+@model SV22T1020232.Models.Catalog.ProductSearchInput
+
+@{
+    ViewBag.Title = "Lập đơn hàng";
+}
+
+<div class="row">
+    <!-- Tìm kiếm & chọn mặt hàng -->
+    <div class="col-4">
+        <div class="card card-outline card-primary h-100">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-search"></i>
+                    Lựa chọn hàng cần bán
+                </h5>
+            </div>
+
+            <div class="card-body">
+                <!-- Search -->
+                <form id="formSearch" class="mb-3"
+                    method="get"
+                    action="~/Order/SearchProduct"
+                    data-target="searchResult"
+                    onsubmit="paginationSearch(event, this, 1)">
+
+                    <div class="input-group">
+                        <input class="form-control"
+                               name="searchValue"
+                               placeholder="Nhập tên mặt hàng cần tìm" autofocus />
+                        <button class="btn btn-primary">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Danh sách mặt hàng -->
+                <div id="searchResult"></div>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Giỏ hàng và thông tin khách hàng -->
+    <div class="col-8">
+        <!-- Giỏ hàng -->
+        <div class="row">
+            <div class="col-12" id="cart">
+                
+            </div>
+        </div>
+        <!-- Thông tin khách hàng và nơi giao hàng -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="card card-outline card-info">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-person"></i>
+                            Thông tin khách hàng & nơi giao hàng
+                        </h5>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="post" onsubmit="@(ViewBag.EditingOrderId != null ? "saveEditOrder" : "createOrder")(event,this)">
+                            @if (ViewBag.EditingOrderId != null)
+                            {
+                                <input type="hidden" name="orderId" value="@ViewBag.EditingOrderId" />
+                                <div class="alert alert-warning">
+                                    <i class="bi bi-pencil-square me-2"></i>
+                                    Đang sửa đơn hàng #@ViewBag.EditingOrderId
+                                </div>
+                            }
+                            
+                            <div class="row mb-3">
+                                <label class="col-md-2 col-form-label">Khách hàng</label>
+                                <div class="col-md-10">
+                                    <select class="form-select" name="customerID" asp-items="ViewBag.CustomerList">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-md-2 col-form-label">Tỉnh/thành</label>
+                                <div class="col-md-10">
+                                    <select class="form-select" name="province"
+                                            asp-items="await SelectListHelper.Provinces()">
+                                        @if (ViewBag.DeliveryProvince != null)
+                                        {
+                                            <option value="@ViewBag.DeliveryProvince" selected>@ViewBag.DeliveryProvince</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-md-2 col-form-label">Địa chỉ</label>
+                                <div class="col-md-10">
+                                    <textarea class="form-control" name="address" rows="2">@(ViewBag.DeliveryAddress ?? "")</textarea>
+                                </div>
+                            </div>
+
+                            <div class="text-end">
+                                <button class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i>
+                                    @(ViewBag.EditingOrderId != null ? "Lưu thay đổi" : "Lập đơn hàng")
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ @section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            paginationSearch(null, document.getElementById("formSearch"), @Model.Page);
+            showCart();
+        });
+
+        function showCart() {
+            fetch('/Order/ShowCart', {
+                method: 'GET'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi khi gọi API');
+                }
+                return response.text(); // vì trả về HTML
+            })
+            .then(html => {
+                document.getElementById('cart').innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('cart').innerHTML = '<p>Không thể tải giỏ hàng.</p>';
+            });
+        }
+
+        function addCartItem(event, form) {
+            event.preventDefault(); // chặn submit mặc định
+
+            // Lấy dữ liệu từ form
+            const formData = new FormData(form);
+
+            fetch('/Order/AddCartItem', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi khi gọi API');
+                }
+                return response.json(); // API trả về JSON
+            })
+            .then(result => {
+                if (result.Code === 0) {
+                    // báo lỗi
+                    alert(result.Message);
+                } else {
+                    // thành công → load lại giỏ hàng
+                    showCart();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi thêm vào giỏ hàng');
+            });
+        }
+
+        function deleteCartItem(productID) {
+            fetch('/Order/DeleteCartItem?productId=' + productID, {
+                method: 'POST'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi khi gọi API');
+                }
+                return response.json();
+            })
+            .then(() => {
+                showCart();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Không thể xóa sản phẩm khỏi giỏ hàng');
+            });
+        }
+
+        function clearCart() {
+            fetch('/Order/ClearCart', {
+                method: 'POST'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi khi gọi API');
+                }
+                return response.json();
+            })
+            .then(() => {
+                showCart();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Không thể xóa giỏ hàng');
+            });
+        }
+
+        function updateCartItem(event, form) {
+            event.preventDefault(); // chặn submit mặc định
+
+            const formData = new FormData(form);
+
+            fetch('/Order/UpdateCartItem', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi khi gọi API');
+                }
+                return response.json(); // API trả JSON { Code, Message }
+            })
+            .then(result => {
+                if (result.Code === 0) {
+                    // lỗi
+                    alert(result.Message);
+                } else {
+                    // đóng modal Bootstrap 5
+                    const modalElement = document.getElementById('dialogModal');
+                    const modalInstance = bootstrap.Modal.getInstance(modalElement)
+                                           || new bootstrap.Modal(modalElement);
+                    modalInstance.hide();
+
+                    // reload lại giỏ hàng
+                    showCart();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi cập nhật giỏ hàng');
+            });
+        }
+
+        function createOrder(event, form) {
+            event.preventDefault(); // chặn submit mặc định
+
+            const formData = new FormData(form);
+
+            fetch('/Order/CreateOrder', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi khi gọi API');
+                }
+                return response.json(); // { Code, Message }
+            })
+            .then(result => {
+                if (result.Code === 0) {
+                    // báo lỗi
+                    alert(result.Message);
+                } else {
+                    // chuyển hướng đến trang chi tiết đơn hàng
+                    window.location.href = '/Order/Detail/' + result.Code;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi tạo đơn hàng');
+            });
+        }
+
+        function saveEditOrder(event, form) {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+
+            fetch('/Order/SaveEditOrder', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi khi gọi API');
+                }
+                return response.json();
+            })
+            .then(result => {
+                if (result.Code === 0) {
+                    alert(result.Message);
+                } else {
+                    alert('Sửa đơn hàng thành công!');
+                    window.location.href = '/Order/Detail/' + result.Code;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi sửa đơn hàng');
+            });
+        }
+    </script>
+}

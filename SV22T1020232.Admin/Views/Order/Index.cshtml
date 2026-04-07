@@ -1,0 +1,73 @@
+@model OrderSearchInput
+@{
+    ViewBag.Title = "Quản lý Đơn hàng";
+}
+@section PageToolBar {
+    <a href="~/Order/Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i>
+        Lập đơn hàng mới
+    </a>
+}
+<div class="card mb-3">
+    <div class="card-body">
+        <form id="formSearch"
+              method="get"
+              action="~/Order/Search"
+              data-target="searchResult"
+              onsubmit="paginationSearch(event, this, 1)">
+
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <label class="form-label">Trạng thái đơn hàng</label>
+                    <select name="Status" class="form-select">
+                        @{
+                            int st = (int)Model.Status;
+                        }
+                        <option value="0" selected="@(st == 0 ? "selected" : null)">-- Tất cả --</option>
+                        <option value="@((int)OrderStatusEnum.New)" selected="@(st == (int)OrderStatusEnum.New ? "selected" : null)">@OrderStatusEnum.New.GetDescription()</option>
+                        <option value="@((int)OrderStatusEnum.Accepted)" selected="@(st == (int)OrderStatusEnum.Accepted ? "selected" : null)">@OrderStatusEnum.Accepted.GetDescription()</option>
+                        <option value="@((int)OrderStatusEnum.Shipping)" selected="@(st == (int)OrderStatusEnum.Shipping ? "selected" : null)">@OrderStatusEnum.Shipping.GetDescription()</option>
+                        <option value="@((int)OrderStatusEnum.Completed)" selected="@(st == (int)OrderStatusEnum.Completed ? "selected" : null)">@OrderStatusEnum.Completed.GetDescription()</option>
+                        <option value="@((int)OrderStatusEnum.Cancelled)" selected="@(st == (int)OrderStatusEnum.Cancelled ? "selected" : null)">@OrderStatusEnum.Cancelled.GetDescription()</option>
+                        <option value="@((int)OrderStatusEnum.Rejected)" selected="@(st == (int)OrderStatusEnum.Rejected ? "selected" : null)">@OrderStatusEnum.Rejected.GetDescription()</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Thời gian lập đơn hàng</label>
+                    <div class="input-group">
+                        <input type="date" name="DateFrom" class="form-control" value="@(Model.DateFrom?.ToString("yyyy-MM-dd"))" />
+                        <span class="input-group-text">-</span>
+                        <input type="date" name="DateTo" class="form-control" value="@(Model.DateTo?.ToString("yyyy-MM-dd"))" />
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <label class="form-label">Tìm kiếm</label>
+                    <div class="input-group">
+                        <input type="text"
+                               name="SearchValue"
+                               value="@Model.SearchValue"
+                               class="form-control"
+                               placeholder="Khách hàng, địa chỉ, tỉnh thành..." autofocus />
+
+                        <button type="submit" class="btn btn-info d-flex align-items-center">
+                            <i class="bi bi-search me-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="searchResult">
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            paginationSearch(null, document.getElementById("formSearch"), @Model.Page);
+        });
+    </script>
+}

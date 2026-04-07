@@ -1,0 +1,67 @@
+@model OrderViewInfo
+@{
+    Layout = null;
+}
+<div class="modal-header text-bg-success">
+    <strong class="modal-title">
+        Xác nhận đơn hàng thành công #@Model.OrderID
+    </strong>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<form id="formOrderFinish" method="post" action="@Url.Action("Finish", "Order", new { id = Model.OrderID })" onsubmit="return handleOrderFinish(event, this);">
+    <div class="modal-body">
+        <div class="alert alert-success d-flex align-items-center">
+            <i class="bi bi-info-circle me-2"></i>
+            Bạn có chắc chắn xác nhận đơn hàng này đã được giao thành công?
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check"></i> Xác nhận hoàn tất
+        </button>
+        <button type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal">
+            Đóng
+        </button>
+    </div>
+</form>
+<script>
+    function handleOrderFinish(event, form) {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Lỗi khi gọi API');
+            }
+            return response.json();
+        })
+        .then(result => {
+            if (result.Code === 0) {
+                alert(result.Message);
+            } else {
+                const modalElement = document.getElementById('dialogModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+                alert(result.Message || 'Hoàn tất đơn hàng thành công!');
+                window.location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Không gửi được yêu cầu');
+        });
+
+        return false;
+    }
+</script>

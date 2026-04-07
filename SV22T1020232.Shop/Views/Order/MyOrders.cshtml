@@ -1,0 +1,259 @@
+@using SV22T1020232.Models.Sales
+@model List<SV22T1020232.Models.Sales.OrderViewInfo>
+@{
+    ViewData["Title"] = "Đơn Mua Của Tôi";
+    var userData = SV22T1020232.Shop.WebUserExtensions.GetUserData(User);
+    var photoSrc = string.IsNullOrEmpty(userData?.Photo) ? "/images/customers/nophoto.png" : $"/images/customers/{userData.Photo}";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    int? curStatus = ViewBag.CurrentStatus;
+    var orderTotals = ViewBag.OrderTotals as Dictionary<int, decimal> ?? new();
+
+    var tabs = new (string Label, int? Val, string Icon)[]
+    {
+        ("Tất cả",       null, "bi-grid"),
+        ("Chờ duyệt",    1,    "bi-clock-history"),
+        ("Đã duyệt",     2,    "bi-check2-square"),
+        ("Đang giao",    3,    "bi-truck"),
+        ("Hoàn thành",   4,    "bi-bag-check"),
+        ("Đã hủy",      -1,    "bi-x-octagon"),
+    };
+}
+
+<style>
+    /* CSS NÂNG CẤP CHO MY ORDERS */
+    .order-status-tabs {
+        background: #fff;
+        padding: 0.5rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        margin-bottom: 1.5rem;
+    }
+
+    .tab-pill {
+        padding: 10px 20px;
+        border-radius: 12px;
+        font-size: 0.88rem;
+        font-weight: 500;
+        color: #64748b;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+
+        .tab-pill:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .tab-pill.active {
+            background: var(--primary);
+            color: #fff !important;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+        }
+
+    .order-card {
+        background: #fff;
+        border: 1px solid #f1f5f9;
+        border-radius: 16px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        overflow: hidden;
+    }
+
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+    .order-header {
+        background: #fafbfc;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .status-badge {
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Tùy chỉnh Sidebar giống Profile */
+    .account-sidebar-v2 {
+        background: #fff;
+        border-radius: 20px;
+        padding: 2rem 1.5rem;
+        border: 1px solid var(--border-color);
+    }
+
+    .nav-link-v2 {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        color: #64748b;
+        font-weight: 500;
+        transition: all 0.2s;
+        margin-bottom: 4px;
+        text-decoration: none;
+    }
+
+        .nav-link-v2:hover {
+            background: #f8fafc;
+            color: var(--primary);
+        }
+
+        .nav-link-v2.active {
+            background: rgba(99, 102, 241, 0.08);
+            color: var(--primary);
+        }
+</style>
+
+<div class="row pt-4 mb-5 g-4">
+    <div class="col-lg-3 col-md-4">
+        <div class="account-sidebar-v2 text-center">
+            <div class="position-relative d-inline-block mb-3">
+                <img src="@photoSrc" class="rounded-circle border border-4 border-white shadow-sm"
+                     style="width:90px;height:90px;object-fit:cover;">
+            </div>
+            <h6 class="fw-bold mb-1 text-dark">@userData?.CustomerName</h6>
+            <p class="text-muted small mb-4">@userData?.Email</p>
+
+            <nav class="text-start">
+                <a class="nav-link-v2" asp-controller="Account" asp-action="Profile">
+                    <i class="bi bi-person-circle fs-5"></i> Hồ sơ của tôi
+                </a>
+                <a class="nav-link-v2 active" asp-action="MyOrders">
+                    <i class="bi bi-box-seam fs-5"></i> Đơn hàng đã mua
+                </a>
+                <a class="nav-link-v2" asp-controller="Account" asp-action="ChangePassword">
+                    <i class="bi bi-shield-lock fs-5"></i> Đổi mật khẩu
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="col-lg-9 col-md-8">
+        <div class="order-status-tabs d-flex overflow-auto" style="scrollbar-width: none;">
+            @foreach (var tab in tabs)
+            {
+                bool isActive = curStatus == tab.Val || (tab.Val == null && curStatus == null);
+                <a asp-action="MyOrders" asp-route-status="@tab.Val"
+                   class="tab-pill text-decoration-none @(isActive ? "active" : "")">
+                    <i class="bi @tab.Icon me-2"></i>@tab.Label
+                </a>
+            }
+        </div>
+
+        @if (Model == null || Model.Count == 0)
+        {
+            <div class="bg-white rounded-4 py-5 text-center shadow-sm">
+                <div class="mb-4">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4076/4076432.png" style="width: 120px; opacity: 0.5;">
+                </div>
+                <h5 class="fw-bold text-dark">Chưa có đơn hàng nào</h5>
+                <p class="text-muted small px-5">Bạn chưa có đơn hàng nào ở trạng thái này. Khám phá ngay hàng ngàn sản phẩm hấp dẫn nhé!</p>
+                <a asp-controller="Product" asp-action="Index" class="btn btn-primary-indigo rounded-3 px-4 py-2 mt-2">
+                    Tiếp tục mua sắm
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-column gap-4">
+                @foreach (var order in Model)
+                {
+                    decimal orderTotal = orderTotals.GetValueOrDefault(order.OrderID, 0);
+
+                    @* Status Style & Label Logic *@
+                    var (badgeClass, icon, statusLabel) = order.Status switch
+                    {
+                        OrderStatusEnum.New => ("bg-primary bg-opacity-10 text-primary", "bi-clock", "Chờ duyệt"),
+                        OrderStatusEnum.Accepted => ("bg-info bg-opacity-10 text-info", "bi-check2-circle", "Đã duyệt"),
+                        OrderStatusEnum.Shipping => ("bg-warning bg-opacity-10 text-warning", "bi-truck", "Đang giao"),
+                        OrderStatusEnum.Completed => ("bg-success bg-opacity-10 text-success", "bi-bag-check-fill", "Hoàn thành"),
+                        OrderStatusEnum.Cancelled => ("bg-danger bg-opacity-10 text-danger", "bi-x-circle", "Đã hủy"),
+                        OrderStatusEnum.Rejected => ("bg-secondary bg-opacity-10 text-secondary", "bi-slash-circle", "Bị từ chối"),
+                        _ => ("bg-secondary bg-opacity-10 text-secondary", "bi-question-circle", "Không xác định")
+                    };
+
+                    <div class="order-card">
+                        <div class="order-header d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="fw-bold text-dark">Mã đơn: #@order.OrderID</span>
+                                <span class="text-muted d-none d-md-block" style="font-size: 0.85rem;">
+                                    | <i class="bi bi-calendar3 ms-2 me-1"></i> @order.OrderTime.ToString("dd/MM/yyyy")
+                                </span>
+                            </div>
+                            <span class="status-badge @badgeClass">
+                                <i class="bi @icon me-1"></i> @statusLabel
+                            </span>
+                        </div>
+
+                        <div class="p-4">
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <div class="d-flex gap-3">
+                                        <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="width:50px; height:50px;">
+                                            <i class="bi bi-geo-alt fs-4 text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark" style="font-size: 0.95rem;">@order.CustomerName</div>
+                                            <div class="text-muted small mt-1">
+                                                <i class="bi bi-map me-1"></i> @order.DeliveryAddress, @order.DeliveryProvince
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-md-end border-start-md">
+                                    <div class="text-muted small mb-1">Tổng số tiền</div>
+                                    <div class="fw-bold fs-5 text-primary">
+                                        @orderTotal.ToString("N0") <span class="small">₫</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="opacity-10 my-3">
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-muted" style="font-size: 0.8rem;">
+                                    Cập nhật lúc: @order.OrderTime.ToString("HH:mm")
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <a asp-action="OrderDetail" asp-route-id="@order.OrderID"
+                                       class="btn btn-light btn-sm rounded-3 px-3 fw-medium">
+                                        <i class="bi bi-receipt me-1"></i> Chi tiết
+                                    </a>
+                                    @if (order.Status == OrderStatusEnum.New)
+                                    {
+                                        <button class="btn btn-outline-danger btn-sm rounded-3 px-3 fw-medium">Hủy đơn</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (totalPages > 1)
+            {
+                <nav class="mt-5">
+                    <ul class="pagination justify-content-center gap-2">
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item">
+                                <a class="page-link border-0 rounded-3 shadow-sm @(i == currentPage ? "bg-primary text-white" : "text-dark")"
+                                   asp-action="MyOrders" asp-route-page="@i" asp-route-status="@curStatus"
+                                   style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                    @i
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+        }
+    </div>
+</div>

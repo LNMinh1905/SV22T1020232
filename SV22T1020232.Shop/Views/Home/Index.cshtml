@@ -1,0 +1,254 @@
+@{
+    ViewData["Title"] = "Trang chủ - LNM Shop";
+    var featuredProducts = ViewBag.FeaturedProducts as List<Product>;
+    var categories = ViewBag.Categories as List<Category>;
+}
+
+<style>
+    /* --- CSS CHO THEME TỐI GIẢN HIỆN ĐẠI --- */
+    .hero-banner {
+        background: #0f172a; /* Nền xám đen sang trọng (Slate 900) */
+        border-radius: var(--radius-lg, 24px);
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Hiệu ứng ánh sáng mờ phía sau */
+    .hero-glow-1 {
+        position: absolute;
+        top: -20%;
+        right: -10%;
+        width: 500px;
+        height: 500px;
+        background: var(--primary);
+        filter: blur(120px);
+        border-radius: 50%;
+        opacity: 0.15;
+        z-index: 1;
+    }
+
+    .hero-glow-2 {
+        position: absolute;
+        bottom: -20%;
+        left: 20%;
+        width: 400px;
+        height: 400px;
+        background: #38bdf8;
+        filter: blur(100px);
+        border-radius: 50%;
+        opacity: 0.1;
+        z-index: 1;
+    }
+
+    .modern-badge {
+        background: rgba(255, 255, 255, 0.1);
+        color: #f8fafc;
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 6px 16px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+
+    /* Nút bấm hiện đại */
+    .btn-primary-modern {
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 10px 24px;
+        font-weight: 500;
+        transition: 0.3s ease;
+    }
+
+        .btn-primary-modern:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            color: white;
+        }
+
+    .btn-glass {
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50px;
+        padding: 10px 24px;
+        font-weight: 500;
+        transition: 0.3s ease;
+        backdrop-filter: blur(8px);
+    }
+
+        .btn-glass:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+    /* Thẻ danh mục */
+    .category-card {
+        background: var(--surface);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        padding: 1.5rem 1rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+    }
+
+        .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: #cbd5e1;
+        }
+
+    .category-icon {
+        width: 56px;
+        height: 56px;
+        background: #f1f5f9;
+        color: var(--text-dark);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        transition: 0.3s ease;
+    }
+
+    .category-card:hover .category-icon {
+        background: var(--primary);
+        color: white;
+    }
+
+    /* Phần Kêu gọi hành động (CTA) */
+    .cta-section {
+        background: var(--surface);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+    }
+</style>
+
+<div class="hero-banner mb-5 mt-2" style="min-height: 400px; display: flex; align-items: center;">
+    <div class="hero-glow-1"></div>
+    <div class="hero-glow-2"></div>
+
+    <div class="container position-relative py-5" style="z-index: 2;">
+        <div class="row align-items-center">
+            <div class="col-lg-7 ps-lg-4">
+                <div class="modern-badge d-inline-block mb-4">
+                    ✨ Trải nghiệm giao diện mới 2026
+                </div>
+                <h1 class="display-4 fw-bold mb-3 text-white" style="letter-spacing: -1.5px; line-height: 1.15;">
+                    Định hình lại cách bạn <br />
+                    <span style="color: #a5b4fc;">mua sắm trực tuyến.</span>
+                </h1>
+                <p class="mb-5" style="color: #94a3b8; font-size: 1.1rem; max-width: 500px; font-weight: 300;">
+                    Tận hưởng không gian mua sắm tối giản, tốc độ vượt trội và hàng ngàn sản phẩm được chọn lọc khắt khe.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a asp-controller="Product" asp-action="Index" class="btn-primary-modern text-decoration-none">
+                        Khám phá sản phẩm <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                    @if (!User.Identity?.IsAuthenticated == true)
+                    {
+                        <a asp-controller="Account" asp-action="Register" class="btn-glass text-decoration-none">
+                            Tạo tài khoản
+                        </a>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-5 text-center d-none d-lg-block">
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (categories != null && categories.Count > 0)
+{
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h3 class="fw-bold mb-1 text-dark" style="letter-spacing: -0.5px;">Danh mục nổi bật</h3>
+                <p class="text-muted mb-0 small">Duyệt qua các bộ sưu tập được yêu thích nhất</p>
+            </div>
+            <a asp-controller="Product" asp-action="Index" class="text-decoration-none fw-medium" style="color: var(--primary); font-size: 0.95rem;">
+                Xem tất cả <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="row g-3">
+            @foreach (var category in categories.Take(6))
+            {
+                <div class="col-lg-2 col-md-4 col-6">
+                    <a asp-controller="Product" asp-action="Index" asp-route-CategoryID="@category.CategoryID" class="category-card">
+                        <div class="category-icon">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        <span class="fw-semibold text-dark" style="font-size: 0.9rem;">
+                            @category.CategoryName
+                        </span>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<div class="mb-5 pb-4 border-bottom" style="border-color: var(--border-color)!important;">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h3 class="fw-bold mb-1 text-dark" style="letter-spacing: -0.5px;">Gợi ý cho bạn</h3>
+            <p class="text-muted mb-0 small">Những sản phẩm đang được săn đón nhất</p>
+        </div>
+        <a asp-controller="Product" asp-action="Index" class="text-decoration-none fw-medium" style="color: var(--primary); font-size: 0.95rem;">
+            Tất cả sản phẩm <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+
+    @if (featuredProducts != null && featuredProducts.Count > 0)
+    {
+        <div class="row g-4">
+            @foreach (var product in featuredProducts)
+            {
+                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                    <partial name="_ProductCard" model="product" />
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5 rounded-4" style="background: var(--surface); border: 1px solid var(--border-color);">
+            <i class="bi bi-inboxes display-4 text-muted opacity-25"></i>
+            <p class="text-muted mt-3 fw-medium">Đang cập nhật sản phẩm mới.</p>
+        </div>
+    }
+</div>
+
+<div class="cta-section py-5 px-4 text-center mb-4">
+    <div class="d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; background: #f1f5f9; border-radius: 50%; color: var(--primary); font-size: 1.8rem;">
+        <i class="bi bi-rocket-takeoff"></i>
+    </div>
+    <h3 class="fw-bold mb-2 text-dark" style="letter-spacing: -0.5px;">
+        Sẵn sàng nâng tầm phong cách?
+    </h3>
+    <p class="text-muted mb-4" style="max-width: 500px; margin: 0 auto;">
+        Gia nhập cộng đồng LNM ngay hôm nay để nhận thông báo về các đợt phát hành sản phẩm giới hạn và đặc quyền dành riêng cho thành viên.
+    </p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a asp-controller="Account" asp-action="Register" class="btn btn-dark rounded-pill px-4 py-2 fw-medium">
+            Tạo tài khoản ngay
+        </a>
+        <a asp-controller="Product" asp-action="Index" class="btn rounded-pill px-4 py-2 fw-medium" style="background: #f1f5f9; color: var(--text-dark);">
+            Tiếp tục mua sắm
+        </a>
+    </div>
+</div>

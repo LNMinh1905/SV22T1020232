@@ -1,0 +1,196 @@
+@model OrderViewInfo
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    var details = ViewBag.OrderDetails as List<OrderDetailViewInfo> ?? new List<OrderDetailViewInfo>();
+    var total = ViewBag.OrderTotal is decimal d ? d : details.Sum(x => x.Quantity * x.SalePrice);
+    int oid = Model.OrderID;
+}
+
+@section PageToolBar {
+    @if (Model.Status == OrderStatusEnum.New)
+    {
+        <a href="~/Order/Edit/@oid"
+           class="btn btn-warning me-1">
+            <i class="bi bi-pencil-square"></i>
+            Sửa đơn hàng
+        </a>
+    }
+    
+    <div class="btn-group">
+        <button type="button"
+                class="btn btn-primary dropdown-toggle"
+                data-bs-toggle="dropdown">
+            <i class="bi bi-gear me-1"></i>
+            Xử lý đơn hàng
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item open-modal" href="~/Order/Accept/@oid">Duyệt đơn hàng</a></li>
+            <li><a class="dropdown-item open-modal" href="~/Order/Shipping/@oid">Chuyển giao hàng</a></li>
+            <li><a class="dropdown-item open-modal" href="~/Order/Finish/@oid">Hoàn tất đơn hàng</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger open-modal" href="~/Order/Cancel/@oid">Hủy đơn hàng</a></li>
+            <li><a class="dropdown-item text-danger open-modal" href="~/Order/Reject/@oid">Từ chối đơn hàng</a></li>
+        </ul>
+    </div>
+
+    <a href="~/Order/Delete/@oid"
+       class="btn btn-danger ms-1 open-modal">
+        <i class="bi bi-trash"></i>
+        Xóa
+    </a>
+
+    <a href="~/Order" class="btn btn-secondary ms-1">
+        <i class="bi bi-arrow-left"></i>
+        Quay lại
+    </a>
+}
+
+<div class="alert alert-info d-flex align-items-center mb-3">
+    <i class="bi bi-info-circle-fill fs-4 me-2"></i>
+    <div>
+        <strong>Trạng thái đơn hàng:</strong>
+        @Model.Status.GetDescription()
+        @if (Model.FinishedTime.HasValue)
+        {
+            <span> — Hoàn tất lúc <b>@Model.FinishedTime.Value.ToString("dd/MM/yyyy HH:mm")</b></span>
+        }
+    </div>
+</div>
+
+<div class="card card-primary card-outline mb-3">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-receipt me-2"></i>
+            Thông tin đơn hàng
+        </h5>
+    </div>
+
+    <div class="card-body ps-4 pe-4">
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Mã đơn hàng</div>
+            <div class="col-md-3">@Model.OrderID</div>
+
+            <div class="col-md-3 fw-bold">Ngày lập</div>
+            <div class="col-md-3">@Model.OrderTime.ToString("dd/MM/yyyy HH:mm")</div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 fw-bold">Nhân viên phụ trách</div>
+            <div class="col-md-3">@(string.IsNullOrWhiteSpace(Model.EmployeeName) ? "—" : Model.EmployeeName)</div>
+
+            <div class="col-md-3 fw-bold">Ngày nhận đơn</div>
+            <div class="col-md-3">@(Model.AcceptTime?.ToString("dd/MM/yyyy HH:mm") ?? "—")</div>
+        </div>
+    </div>
+</div>
+
+<div class="card card-info card-outline mb-3">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-person me-2"></i>
+            Thông tin khách hàng
+        </h5>
+    </div>
+
+    <div class="card-body ps-4 pe-4">
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Khách hàng</div>
+            <div class="col-md-3">@Model.CustomerName</div>
+
+            <div class="col-md-3 fw-bold">Tên giao dịch</div>
+            <div class="col-md-3">@Model.CustomerContactName</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Email</div>
+            <div class="col-md-9">@Model.CustomerEmail</div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 fw-bold">Địa chỉ</div>
+            <div class="col-md-9">@Model.CustomerAddress</div>
+        </div>
+    </div>
+</div>
+
+<div class="card card-success card-outline mb-3">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-truck me-2"></i>
+            Thông tin giao hàng
+        </h5>
+    </div>
+
+    <div class="card-body ps-4 pe-4">
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Người giao hàng</div>
+            <div class="col-md-3">@(string.IsNullOrWhiteSpace(Model.ShipperName) ? "—" : Model.ShipperName)</div>
+
+            <div class="col-md-3 fw-bold">Điện thoại</div>
+            <div class="col-md-3">@Model.ShipperPhone</div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-3 fw-bold">Địa chỉ giao hàng</div>
+            <div class="col-md-9">@Model.DeliveryAddress</div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 fw-bold">Tỉnh / Thành</div>
+            <div class="col-md-9">@Model.DeliveryProvince</div>
+        </div>
+    </div>
+</div>
+
+<div class="card card-secondary card-outline">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-box-seam me-2"></i>
+            Danh sách mặt hàng
+        </h5>
+    </div>
+
+    <div class="card-body table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-secondary text-center">
+                <tr>
+                    <th>STT</th>
+                    <th>Tên hàng</th>
+                    <th>ĐVT</th>
+                    <th>Số lượng</th>
+                    <th>Giá</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ var i = 0; }
+                @foreach (var line in details)
+                {
+                    i++;
+                    <tr>
+                        <td class="text-center">@i</td>
+                        <td>@line.ProductName</td>
+                        <td class="text-center">@line.Unit</td>
+                        <td class="text-center">@line.Quantity</td>
+                        <td class="text-end">@line.SalePrice.ToString("N0")</td>
+                        <td class="text-end">@((line.Quantity * line.SalePrice).ToString("N0"))</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="5" class="text-end">Tổng cộng</th>
+                    <th class="text-end">@total.ToString("N0")</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card-body .row {
+            border-bottom: 1px dotted #646464;
+        }
+    </style>
+}
